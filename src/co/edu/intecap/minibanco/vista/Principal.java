@@ -38,6 +38,7 @@ public class Principal extends javax.swing.JFrame {
         mnuAdministracion = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         mnuTransacciones = new javax.swing.JMenu();
         mnuOpciones = new javax.swing.JMenu();
         miIngresar = new javax.swing.JMenuItem();
@@ -55,6 +56,11 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/table-edit.png"))); // NOI18N
         jMenuItem2.setText("Administrar Tipo Producto");
         mnuAdministracion.add(jMenuItem2);
+
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/cliente-producto.png"))); // NOI18N
+        jMenuItem3.setText("Administrar Cliente Producto");
+        mnuAdministracion.add(jMenuItem3);
 
         jMenuBar1.add(mnuAdministracion);
 
@@ -148,6 +154,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem miIngresar;
     private javax.swing.JMenu mnuAdministracion;
     private javax.swing.JMenu mnuOpciones;
