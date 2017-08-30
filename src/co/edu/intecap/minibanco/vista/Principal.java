@@ -5,6 +5,8 @@
  */
 package co.edu.intecap.minibanco.vista;
 
+import java.awt.Dimension;
+
 /**
  *
  * @author Capacitaciones_pc18
@@ -16,6 +18,11 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        this.setTitle("Aplicación MiniBanco");
+        this.setLocationRelativeTo(null);
+        this.setMinimumSize(new Dimension(500, 430));
+        mnuAdministracion.setVisible(false);
+        mnuTransacciones.setVisible(false);
     }
 
     /**
@@ -27,22 +34,75 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        mnuAdministracion = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        mnuTransacciones = new javax.swing.JMenu();
+        mnuOpciones = new javax.swing.JMenu();
+        miIngresar = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        mnuAdministracion.setText("Administración");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/account-edit.png"))); // NOI18N
+        jMenuItem1.setText("Administrar Clientes");
+        mnuAdministracion.add(jMenuItem1);
+
+        jMenuBar1.add(mnuAdministracion);
+
+        mnuTransacciones.setText("Transacciones");
+        mnuTransacciones.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                mnuTransaccionesFocusGained(evt);
+            }
+        });
+        jMenuBar1.add(mnuTransacciones);
+
+        mnuOpciones.setText("Opciones");
+
+        miIngresar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
+        miIngresar.setText("Ingresar");
+        miIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miIngresarActionPerformed(evt);
+            }
+        });
+        mnuOpciones.add(miIngresar);
+
+        jMenuBar1.add(mnuOpciones);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 600, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 407, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void mnuTransaccionesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mnuTransaccionesFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mnuTransaccionesFocusGained
+
+    private void miIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miIngresarActionPerformed
+        new VentanaLogin(this, this, true).setVisible(true); 
+    }//GEN-LAST:event_miIngresarActionPerformed
+
+    public void habilitarMenu(){
+        mnuAdministracion.setVisible(true);
+        mnuTransacciones.setVisible(true);
+        miIngresar.setVisible(false);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -79,5 +139,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem miIngresar;
+    private javax.swing.JMenu mnuAdministracion;
+    private javax.swing.JMenu mnuOpciones;
+    private javax.swing.JMenu mnuTransacciones;
     // End of variables declaration//GEN-END:variables
 }
