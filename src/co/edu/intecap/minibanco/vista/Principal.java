@@ -5,7 +5,16 @@
  */
 package co.edu.intecap.minibanco.vista;
 
+import co.edu.intecap.minibanco.vista.paneles.PanelCliente;
+import co.edu.intecap.minibanco.vista.paneles.VentanaCliente;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 /**
  *
@@ -18,9 +27,11 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        initListeners();
         this.setTitle("Aplicación MiniBanco");
         this.setLocationRelativeTo(null);
         this.setMinimumSize(new Dimension(500, 430));
+        setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         mnuAdministracion.setVisible(false);
         mnuTransacciones.setVisible(false);
     }
@@ -34,28 +45,43 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dpContenedor = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuAdministracion = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        miAdminCliente = new javax.swing.JMenuItem();
+        miAdminTipoProducto = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         mnuTransacciones = new javax.swing.JMenu();
         mnuOpciones = new javax.swing.JMenu();
         miIngresar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+
+        javax.swing.GroupLayout dpContenedorLayout = new javax.swing.GroupLayout(dpContenedor);
+        dpContenedor.setLayout(dpContenedorLayout);
+        dpContenedorLayout.setHorizontalGroup(
+            dpContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 600, Short.MAX_VALUE)
+        );
+        dpContenedorLayout.setVerticalGroup(
+            dpContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 552, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(dpContenedor);
 
         mnuAdministracion.setText("Administración");
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/account-edit.png"))); // NOI18N
-        jMenuItem1.setText("Administrar Clientes");
-        mnuAdministracion.add(jMenuItem1);
+        miAdminCliente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
+        miAdminCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/account-edit.png"))); // NOI18N
+        miAdminCliente.setText("Administrar Clientes");
+        mnuAdministracion.add(miAdminCliente);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/table-edit.png"))); // NOI18N
-        jMenuItem2.setText("Administrar Tipo Producto");
-        mnuAdministracion.add(jMenuItem2);
+        miAdminTipoProducto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK));
+        miAdminTipoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/table-edit.png"))); // NOI18N
+        miAdminTipoProducto.setText("Administrar Tipo Producto");
+        mnuAdministracion.add(miAdminTipoProducto);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/cliente-producto.png"))); // NOI18N
@@ -65,11 +91,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1.add(mnuAdministracion);
 
         mnuTransacciones.setText("Transacciones");
-        mnuTransacciones.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                mnuTransaccionesFocusGained(evt);
-            }
-        });
         jMenuBar1.add(mnuTransacciones);
 
         mnuOpciones.setText("Opciones");
@@ -87,34 +108,44 @@ public class Principal extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mnuTransaccionesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mnuTransaccionesFocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnuTransaccionesFocusGained
-
     private void miIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miIngresarActionPerformed
-        new VentanaLogin(this, this, true).setVisible(true); 
+        new VentanaLogin(this, this, true).setVisible(true);
     }//GEN-LAST:event_miIngresarActionPerformed
 
-    public void habilitarMenu(){
+    public void habilitarMenu() {
         mnuAdministracion.setVisible(true);
         mnuTransacciones.setVisible(true);
         miIngresar.setVisible(false);
     }
-    
+
+    private void initListeners() {
+        ActionListener eventoClickMenu = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JInternalFrame subVentana = null;
+                JMenuItem menuEvento = (JMenuItem) ae.getSource();
+                subVentana = asignarPanel(menuEvento);
+                subVentana.setVisible(true);
+                dpContenedor.add(subVentana);
+                System.out.println("Dimensiones: "+subVentana.getBounds());
+            }
+        };
+
+        miAdminCliente.addActionListener(eventoClickMenu);
+        miAdminTipoProducto.addActionListener(eventoClickMenu);
+    }
+
+    private JInternalFrame asignarPanel(JMenuItem menuEvento) {
+        JInternalFrame panel = null;
+        if (menuEvento.equals(miAdminCliente)) {
+            panel = new VentanaCliente();
+        }
+        return panel;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -151,10 +182,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDesktopPane dpContenedor;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem miAdminCliente;
+    private javax.swing.JMenuItem miAdminTipoProducto;
     private javax.swing.JMenuItem miIngresar;
     private javax.swing.JMenu mnuAdministracion;
     private javax.swing.JMenu mnuOpciones;
