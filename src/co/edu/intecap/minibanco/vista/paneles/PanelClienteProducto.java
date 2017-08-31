@@ -101,9 +101,9 @@ public class PanelClienteProducto extends javax.swing.JPanel {
 
         cboTipoProducto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sel. Tipo Producto" }));
 
-        btnLimpiar.setText("Limpiar");
+        btnLimpiar.setText("Cancelar");
 
-        btnGuardar.setText("Guardar - Modificar");
+        btnGuardar.setText("Registrar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

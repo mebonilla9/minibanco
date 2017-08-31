@@ -377,12 +377,12 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnLimpiar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Limpiar"/>
+        <Property name="text" type="java.lang.String" value="Cancelar"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnGuardar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Guardar - Modificar"/>
+        <Property name="text" type="java.lang.String" value="Registrar"/>
       </Properties>
     </Component>
   </SubComponents>
