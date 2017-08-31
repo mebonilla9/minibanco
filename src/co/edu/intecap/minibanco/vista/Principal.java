@@ -7,6 +7,7 @@ package co.edu.intecap.minibanco.vista;
 
 import co.edu.intecap.minibanco.vista.paneles.PanelCliente;
 import co.edu.intecap.minibanco.vista.paneles.VentanaCliente;
+import co.edu.intecap.minibanco.vista.paneles.VentanaTipoProducto;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -130,7 +131,7 @@ public class Principal extends javax.swing.JFrame {
                 subVentana = asignarPanel(menuEvento);
                 subVentana.setVisible(true);
                 dpContenedor.add(subVentana);
-                System.out.println("Dimensiones: "+subVentana.getBounds());
+                System.out.println("Dimensiones: " + subVentana.getBounds());
             }
         };
 
@@ -142,6 +143,9 @@ public class Principal extends javax.swing.JFrame {
         JInternalFrame panel = null;
         if (menuEvento.equals(miAdminCliente)) {
             panel = new VentanaCliente();
+        }
+        if (menuEvento.equals(miAdminTipoProducto)) {
+            panel = new VentanaTipoProducto();
         }
         return panel;
     }
