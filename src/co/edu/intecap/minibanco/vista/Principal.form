@@ -42,6 +42,17 @@
                 <Property name="text" type="java.lang.String" value="Administrar Cliente Producto"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miMovimiento">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+M"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/movimiento.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Administrar Movimiento"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="mnuTransacciones">
