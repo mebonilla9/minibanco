@@ -14,15 +14,11 @@ import co.edu.intecap.minibancolibreria.negocio.delegado.TipoClienteDelegado;
 import co.edu.intecap.minibancolibreria.negocio.delegado.TipoDocumentoDelegado;
 import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
 import co.edu.intecap.minibancolibreria.negocio.util.PasswordUtil;
-import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -51,9 +47,17 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             cargarListasIniciales();
         } catch (MiniBancoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMensaje(), "Advertencia", JOptionPane.ERROR_MESSAGE);
-        } finally{
+        } finally {
             Conexion.desconectar(cnn);
         }
+        /*tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    System.out.println("fila seleccionada: " + tblClientes.getSelectedRow());
+                }
+            }
+        });*/
     }
 
     private void cargarListasIniciales() {
@@ -346,31 +350,31 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             }
             Cliente nuevoCliente = new Cliente();
             nuevoCliente.setNombre(txtNombre.getText());
-            nuevoCliente.setApellido(txtNombre.getText());
-            nuevoCliente.setIdentificacion(txtNombre.getText());
-            nuevoCliente.setTelefono(txtNombre.getText());
-            nuevoCliente.setDireccion(txtNombre.getText());
-            nuevoCliente.setUsuario(txtNombre.getText());
+            nuevoCliente.setApellido(txtApellido.getText());
+            nuevoCliente.setIdentificacion(txtIdentificacion.getText());
+            nuevoCliente.setTelefono(txtTelefono.getText());
+            nuevoCliente.setDireccion(txtDireccion.getText());
+            nuevoCliente.setUsuario(txtUsuario.getText());
             nuevoCliente.setContrasena(PasswordUtil.armarContrasena(txtContrasena.getPassword()));
-
+            nuevoCliente.setCorreo(txtCorreo.getText());
             String fecha = txtFechaNacimiento.getText().replace("/", "-");
             //Objeto que valida fechas
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             Date parse = sdf.parse(fecha);
             nuevoCliente.setFechaNacimiento(parse);
-            
-            nuevoCliente.setRol(rbAdministrador.isSelected()?1:2);
-            nuevoCliente.setTipoCliente(listaTipoCliente.get(cboTipoCliente.getSelectedIndex()-1));  
-            nuevoCliente.setTipoDocumento(listaTipoDocumento.get(cboTipoDocumento.getSelectedIndex()-1));  
+
+            nuevoCliente.setRol(rbAdministrador.isSelected() ? 1 : 2);
+            nuevoCliente.setTipoCliente(listaTipoCliente.get(cboTipoCliente.getSelectedIndex() - 1));
+            nuevoCliente.setTipoDocumento(listaTipoDocumento.get(cboTipoDocumento.getSelectedIndex() - 1));
             new ClienteDelegado(cnn).insertar(nuevoCliente);
             Conexion.commit(cnn);
         } catch (MiniBancoException | ParseException e) {
             if (e instanceof ParseException) {
                 JOptionPane.showMessageDialog(this, "Formato de fecha invalido");
             } else {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Registro Usuario", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ((MiniBancoException)e).getMensaje(), "Registro Usuario", JOptionPane.ERROR_MESSAGE);
             }
-        } finally{
+        } finally {
             Conexion.desconectar(cnn);
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
