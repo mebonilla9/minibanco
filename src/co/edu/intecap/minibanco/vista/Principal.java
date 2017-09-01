@@ -7,6 +7,7 @@ package co.edu.intecap.minibanco.vista;
 
 import co.edu.intecap.minibanco.vista.paneles.PanelCliente;
 import co.edu.intecap.minibanco.vista.paneles.VentanaCliente;
+import co.edu.intecap.minibanco.vista.paneles.VentanaTipoCliente;
 import co.edu.intecap.minibanco.vista.paneles.VentanaTipoProducto;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -53,6 +54,7 @@ public class Principal extends javax.swing.JFrame {
         miAdminTipoProducto = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         miMovimiento = new javax.swing.JMenuItem();
+        miAdminTipoCliente = new javax.swing.JMenuItem();
         mnuTransacciones = new javax.swing.JMenu();
         mnuOpciones = new javax.swing.JMenu();
         miIngresar = new javax.swing.JMenuItem();
@@ -94,6 +96,11 @@ public class Principal extends javax.swing.JFrame {
         miMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/movimiento.png"))); // NOI18N
         miMovimiento.setText("Administrar Movimiento");
         mnuAdministracion.add(miMovimiento);
+
+        miAdminTipoCliente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
+        miAdminTipoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/tipo-cliente.png"))); // NOI18N
+        miAdminTipoCliente.setText("Administrar Tipo Cliente");
+        mnuAdministracion.add(miAdminTipoCliente);
 
         jMenuBar1.add(mnuAdministracion);
 
@@ -143,6 +150,7 @@ public class Principal extends javax.swing.JFrame {
 
         miAdminCliente.addActionListener(eventoClickMenu);
         miAdminTipoProducto.addActionListener(eventoClickMenu);
+        miAdminTipoCliente.addActionListener(eventoClickMenu);
     }
 
     private JInternalFrame asignarPanel(JMenuItem menuEvento) {
@@ -152,6 +160,9 @@ public class Principal extends javax.swing.JFrame {
         }
         if (menuEvento.equals(miAdminTipoProducto)) {
             panel = new VentanaTipoProducto();
+        }
+        if (menuEvento.equals(miAdminTipoCliente)) {
+            panel = new VentanaTipoCliente();
         }
         return panel;
     }
@@ -196,6 +207,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem miAdminCliente;
+    private javax.swing.JMenuItem miAdminTipoCliente;
     private javax.swing.JMenuItem miAdminTipoProducto;
     private javax.swing.JMenuItem miIngresar;
     private javax.swing.JMenuItem miMovimiento;
