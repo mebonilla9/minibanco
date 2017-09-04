@@ -9,18 +9,25 @@ import co.edu.intecap.minibancolibreria.modelo.conexion.Conexion;
 import co.edu.intecap.minibancolibreria.modelo.vo.Cliente;
 import co.edu.intecap.minibancolibreria.modelo.vo.TipoCliente;
 import co.edu.intecap.minibancolibreria.modelo.vo.TipoDocumento;
+import co.edu.intecap.minibancolibreria.negocio.constantes.EMensajes;
 import co.edu.intecap.minibancolibreria.negocio.delegado.ClienteDelegado;
 import co.edu.intecap.minibancolibreria.negocio.delegado.TipoClienteDelegado;
 import co.edu.intecap.minibancolibreria.negocio.delegado.TipoDocumentoDelegado;
 import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
+import co.edu.intecap.minibancolibreria.negocio.util.CryptoUtil;
 import co.edu.intecap.minibancolibreria.negocio.util.PasswordUtil;
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -32,14 +39,17 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
     private List<TipoDocumento> listaTipoDocumento;
     private List<Cliente> listaClientes;
     private Connection cnn;
+    private boolean editar;
+    private String contrasenaEditar;
 
     /**
      * Creates new form VentanaCliente
      */
     public VentanaCliente() {
         initComponents();
+        initListeners();
         setClosable(true);
-        setResizable(false);
+        setResizable(true);
         rbgRol.add(rbAdministrador);
         rbgRol.add(rbCliente);
         try {
@@ -64,7 +74,9 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         try {
             listaTipoCliente = new TipoClienteDelegado(cnn).consultar();
             listaTipoDocumento = new TipoDocumentoDelegado(cnn).consultar();
+            listaClientes = new ClienteDelegado(cnn).consultar();
             imprimirListas();
+            imprimirTabla();
         } catch (MiniBancoException ex) {
             System.out.println(ex.getMensaje());
         }
@@ -86,6 +98,52 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         }
         cboTipoDocumento.removeAllItems();
         cboTipoDocumento.setModel(modeloTipoDocumento);
+    }
+
+    private void imprimirTabla() throws MiniBancoException {
+        try {
+            /**
+             * Adicion de las columnas de la tabla
+             */
+            ResultSetMetaData columnasCliente = new ClienteDelegado(cnn).consultarColumnasCliente();
+            DefaultTableModel modeloTabla = new DefaultTableModel();
+            for (int i = 1; i <= columnasCliente.getColumnCount(); i++) {
+                modeloTabla.addColumn(columnasCliente.getColumnName(i));
+            }
+
+            /**
+             * Adicion de las filas de la tabla
+             */
+            for (Cliente cliente : listaClientes) {
+                modeloTabla.addRow(convertirClienteFila(cliente));
+            }
+
+            /**
+             * Asignacion del modelo de tabla al JTable
+             */
+            tblClientes.setModel(modeloTabla);
+        } catch (SQLException e) {
+            throw new MiniBancoException(EMensajes.ERROR_CONSULTAR);
+        }
+    }
+
+    private Object[] convertirClienteFila(Cliente cliente) {
+        Object[] fila = new Object[13];
+        int i = 0;
+        fila[i++] = cliente.getIdCliente();
+        fila[i++] = cliente.getNombre();
+        fila[i++] = cliente.getApellido();
+        fila[i++] = cliente.getIdentificacion();
+        fila[i++] = cliente.getTelefono();
+        fila[i++] = cliente.getDireccion();
+        fila[i++] = cliente.getUsuario();
+        fila[i++] = cliente.getContrasena();
+        fila[i++] = cliente.getFechaNacimiento();
+        fila[i++] = cliente.getCorreo();
+        fila[i++] = cliente.getRol();
+        fila[i++] = cliente.getTipoCliente().getIdTipoCliente();
+        fila[i++] = cliente.getTipoDocumento().getIdTipoDocumento();
+        return fila;
     }
 
     private String validarFormularioCliente() {
@@ -219,6 +277,11 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         });
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nombre:");
 
@@ -344,7 +407,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         try {
             cnn = Conexion.conectar();
             String mensaje = validarFormularioCliente();
-            if (mensaje.length() > 13) {
+            if (mensaje.length() > 13 && !editar) {
                 JOptionPane.showMessageDialog(this, mensaje, "Formulario Incompleto", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -355,30 +418,112 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             nuevoCliente.setTelefono(txtTelefono.getText());
             nuevoCliente.setDireccion(txtDireccion.getText());
             nuevoCliente.setUsuario(txtUsuario.getText());
-            nuevoCliente.setContrasena(PasswordUtil.armarContrasena(txtContrasena.getPassword()));
+            if (editar && txtContrasena.getPassword().length == 0) {
+                nuevoCliente.setContrasena(contrasenaEditar);
+            } else {
+                nuevoCliente.setContrasena(CryptoUtil.cifrarContrasena(PasswordUtil.armarContrasena(txtContrasena.getPassword())));
+            }
             nuevoCliente.setCorreo(txtCorreo.getText());
             String fecha = txtFechaNacimiento.getText().replace("/", "-");
-            //Objeto que valida fechas
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            Date parse = sdf.parse(fecha);
-            nuevoCliente.setFechaNacimiento(parse);
-
+            try {
+                //Objeto que valida fechas
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                Date parse = sdf.parse(fecha);
+                nuevoCliente.setFechaNacimiento(parse);
+            } catch (ParseException e) {
+                throw new MiniBancoException(EMensajes.ERROR_FORMATO_FECHA);
+            }
             nuevoCliente.setRol(rbAdministrador.isSelected() ? 1 : 2);
             nuevoCliente.setTipoCliente(listaTipoCliente.get(cboTipoCliente.getSelectedIndex() - 1));
             nuevoCliente.setTipoDocumento(listaTipoDocumento.get(cboTipoDocumento.getSelectedIndex() - 1));
-            new ClienteDelegado(cnn).insertar(nuevoCliente);
-            Conexion.commit(cnn);
-        } catch (MiniBancoException | ParseException e) {
-            if (e instanceof ParseException) {
-                JOptionPane.showMessageDialog(this, "Formato de fecha invalido");
-            } else {
-                JOptionPane.showMessageDialog(this, ((MiniBancoException)e).getMensaje(), "Registro Usuario", JOptionPane.ERROR_MESSAGE);
+            if(editar){
+                new ClienteDelegado(cnn).editar(nuevoCliente);
+                JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Registro de usuarios", JOptionPane.INFORMATION_MESSAGE);
             }
+            else{
+                new ClienteDelegado(cnn).insertar(nuevoCliente);
+                JOptionPane.showMessageDialog(rootPane, EMensajes.INSERTO.getDescripcion(), "Registro de usuarios", JOptionPane.INFORMATION_MESSAGE);
+
+            } 
+            Conexion.commit(cnn);
+            limpiarFormulario();
+            cargarListasIniciales();
+        } catch (MiniBancoException e) {
+            JOptionPane.showMessageDialog(this, e.getMensaje(), "Registro Usuario", JOptionPane.ERROR_MESSAGE);
         } finally {
             Conexion.desconectar(cnn);
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        limpiarFormulario();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void limpiarFormulario() {
+        txtNombre.setText("");
+        txtApellido.setText("");
+        txtIdentificacion.setText("");
+        txtTelefono.setText("");
+        txtDireccion.setText("");
+        txtUsuario.setText("");
+        txtContrasena.setText("");
+        txtCorreo.setText("");
+        txtFechaNacimiento.setText("");
+        rbgRol.clearSelection();
+        cboTipoCliente.setSelectedIndex(0);
+        cboTipoDocumento.setSelectedIndex(0);
+        btnRegistrar.setText("Registrar");
+    }
+
+    private void initListeners() {
+        tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    Cliente clienteEditar = listaClientes.get(tblClientes.getSelectedRow());
+                    asignarAlFormulario(clienteEditar);
+                }
+            }
+        });
+    }
+
+    private void asignarAlFormulario(Cliente clienteEditar) {
+        txtNombre.setText(clienteEditar.getNombre());
+        txtApellido.setText(clienteEditar.getApellido());
+        txtIdentificacion.setText(clienteEditar.getIdentificacion());
+        txtTelefono.setText(clienteEditar.getTelefono());
+        txtDireccion.setText(clienteEditar.getDireccion());
+        txtUsuario.setText(clienteEditar.getUsuario());
+        txtCorreo.setText(clienteEditar.getCorreo());
+        contrasenaEditar = clienteEditar.getContrasena();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        txtFechaNacimiento.setText(sdf.format(clienteEditar.getFechaNacimiento()));
+        if (clienteEditar.getRol() == 1) {
+            rbAdministrador.setSelected(true);
+        } else {
+            rbCliente.setSelected(true);
+        }
+        asignarTipoCliente(clienteEditar.getTipoCliente().getIdTipoCliente());
+        asignarTipoDocumento(clienteEditar.getTipoDocumento().getIdTipoDocumento());
+        editar = true;
+        btnRegistrar.setText("Actualizar");
+    }
+
+    private void asignarTipoCliente(Long idTipoCliente) {
+        for (int i = 0; i < listaTipoCliente.size(); i++) {
+            if (listaTipoCliente.get(i).getIdTipoCliente() == idTipoCliente) {
+                cboTipoCliente.setSelectedIndex(i + 1);
+            }
+        }
+    }
+
+    private void asignarTipoDocumento(Long idTipoDocumento) {
+        for (int i = 0; i < listaTipoDocumento.size(); i++) {
+            if (listaTipoDocumento.get(i).getIdTipoDocumento() == idTipoDocumento) {
+                cboTipoDocumento.setSelectedIndex(i + 1);
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
