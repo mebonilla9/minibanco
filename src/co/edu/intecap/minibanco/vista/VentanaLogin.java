@@ -5,7 +5,16 @@
  */
 package co.edu.intecap.minibanco.vista;
 
+import co.edu.intecap.minibancolibreria.modelo.conexion.Conexion;
+import co.edu.intecap.minibancolibreria.modelo.vo.Cliente;
+import co.edu.intecap.minibancolibreria.negocio.delegado.ClienteDelegado;
+import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
+import co.edu.intecap.minibancolibreria.negocio.util.CryptoUtil;
+import co.edu.intecap.minibancolibreria.negocio.util.PasswordUtil;
 import java.awt.Frame;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -29,8 +38,8 @@ public class VentanaLogin extends javax.swing.JDialog {
     public VentanaLogin(Principal ventanaPrincipal, Frame frame, boolean modal) {
         super(frame, modal);
         this.ventanaPrincipal = ventanaPrincipal;
-        this.setLocationRelativeTo(null);
         initComponents();
+        this.setLocation(ventanaPrincipal.getBounds().width / 2 - this.getBounds().width / 2, ventanaPrincipal.getBounds().height / 2 - this.getBounds().height / 2);
     }
 
     /**
@@ -108,8 +117,26 @@ public class VentanaLogin extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-        this.ventanaPrincipal.habilitarMenu();
-        this.setVisible(false);
+        try {
+            String usuario = txtUsuario.getText();
+            String contrasena = PasswordUtil.armarContrasena(txtContrasena.getPassword());
+
+            if (usuario.equals("") || contrasena.equals("")) {
+                JOptionPane.showMessageDialog(this, "Debe diligenciar correctamente el formulario");
+                return;
+            }
+            Connection cnn = Conexion.conectar();
+            Cliente clienteLogin = new ClienteDelegado(cnn).consultaLogin(usuario, CryptoUtil.cifrarContrasena(contrasena));
+            
+            if (clienteLogin.getIdCliente() == null) {
+                JOptionPane.showMessageDialog(this, "Usuario no encontrado, consulte al administrador");
+                return;
+            }
+            
+            this.ventanaPrincipal.habilitarMenu(clienteLogin);
+            this.setVisible(false);
+        } catch (MiniBancoException e) {
+        }
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

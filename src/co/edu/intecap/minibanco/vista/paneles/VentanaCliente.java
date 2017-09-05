@@ -41,6 +41,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
     private Connection cnn;
     private boolean editar;
     private String contrasenaEditar;
+    private Long idClienteEditar;
 
     /**
      * Creates new form VentanaCliente
@@ -52,14 +53,9 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         setResizable(true);
         rbgRol.add(rbAdministrador);
         rbgRol.add(rbCliente);
-        try {
-            cnn = Conexion.conectar();
-            cargarListasIniciales();
-        } catch (MiniBancoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMensaje(), "Advertencia", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            Conexion.desconectar(cnn);
-        }
+
+        cargarListasIniciales();
+
         /*tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -72,6 +68,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
 
     private void cargarListasIniciales() {
         try {
+            cnn = Conexion.conectar();
             listaTipoCliente = new TipoClienteDelegado(cnn).consultar();
             listaTipoDocumento = new TipoDocumentoDelegado(cnn).consultar();
             listaClientes = new ClienteDelegado(cnn).consultar();
@@ -79,6 +76,8 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             imprimirTabla();
         } catch (MiniBancoException ex) {
             System.out.println(ex.getMensaje());
+        } finally {
+            Conexion.desconectar(cnn);
         }
     }
 
@@ -436,15 +435,15 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             nuevoCliente.setRol(rbAdministrador.isSelected() ? 1 : 2);
             nuevoCliente.setTipoCliente(listaTipoCliente.get(cboTipoCliente.getSelectedIndex() - 1));
             nuevoCliente.setTipoDocumento(listaTipoDocumento.get(cboTipoDocumento.getSelectedIndex() - 1));
-            if(editar){
+            if (editar) {
+                nuevoCliente.setIdCliente(idClienteEditar);
                 new ClienteDelegado(cnn).editar(nuevoCliente);
                 JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Registro de usuarios", JOptionPane.INFORMATION_MESSAGE);
-            }
-            else{
+            } else {
                 new ClienteDelegado(cnn).insertar(nuevoCliente);
                 JOptionPane.showMessageDialog(rootPane, EMensajes.INSERTO.getDescripcion(), "Registro de usuarios", JOptionPane.INFORMATION_MESSAGE);
 
-            } 
+            }
             Conexion.commit(cnn);
             limpiarFormulario();
             cargarListasIniciales();
@@ -479,7 +478,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
+                if (!e.getValueIsAdjusting() && tblClientes.getSelectedRow() > -1) {
                     Cliente clienteEditar = listaClientes.get(tblClientes.getSelectedRow());
                     asignarAlFormulario(clienteEditar);
                 }
@@ -488,6 +487,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
     }
 
     private void asignarAlFormulario(Cliente clienteEditar) {
+        this.idClienteEditar = clienteEditar.getIdCliente();
         txtNombre.setText(clienteEditar.getNombre());
         txtApellido.setText(clienteEditar.getApellido());
         txtIdentificacion.setText(clienteEditar.getIdentificacion());

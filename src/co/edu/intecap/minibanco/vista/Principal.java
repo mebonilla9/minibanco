@@ -9,6 +9,7 @@ import co.edu.intecap.minibanco.vista.paneles.PanelCliente;
 import co.edu.intecap.minibanco.vista.paneles.VentanaCliente;
 import co.edu.intecap.minibanco.vista.paneles.VentanaTipoCliente;
 import co.edu.intecap.minibanco.vista.paneles.VentanaTipoProducto;
+import co.edu.intecap.minibancolibreria.modelo.vo.Cliente;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -129,10 +131,15 @@ public class Principal extends javax.swing.JFrame {
         new VentanaLogin(this, this, true).setVisible(true);
     }//GEN-LAST:event_miIngresarActionPerformed
 
-    public void habilitarMenu() {
-        mnuAdministracion.setVisible(true);
+    public void habilitarMenu(Cliente cliente) {
+        if (cliente.getRol() == 1) {
+            mnuAdministracion.setVisible(true);
+        }
         mnuTransacciones.setVisible(true);
         miIngresar.setVisible(false);
+        JOptionPane.showMessageDialog(this, "Bienvenido "+cliente.getNombre()+ " "+cliente.getApellido(),"Acceso Autorizado",JOptionPane.INFORMATION_MESSAGE);
+        
+        this.setTitle(this.getTitle() + " - ("+cliente.getUsuario()+") "+cliente.getNombre()+ " "+cliente.getApellido());
     }
 
     private void initListeners() {
