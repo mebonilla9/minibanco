@@ -14,8 +14,10 @@ import co.edu.intecap.minibancolibreria.negocio.delegado.ClienteDelegado;
 import co.edu.intecap.minibancolibreria.negocio.delegado.TipoClienteDelegado;
 import co.edu.intecap.minibancolibreria.negocio.delegado.TipoDocumentoDelegado;
 import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
+import co.edu.intecap.minibancolibreria.negocio.util.CheckBoxUtil;
 import co.edu.intecap.minibancolibreria.negocio.util.CryptoUtil;
 import co.edu.intecap.minibancolibreria.negocio.util.PasswordUtil;
+import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -37,7 +39,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
 
     private List<TipoCliente> listaTipoCliente;
     private List<TipoDocumento> listaTipoDocumento;
-    private List<Cliente> listaClientes;
+    private List<Cliente> listaCliente;
     private Connection cnn;
     private boolean editar;
     private String contrasenaEditar;
@@ -49,10 +51,12 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
     public VentanaCliente() {
         initComponents();
         initListeners();
-        setClosable(true);
-        setResizable(true);
-        rbgRol.add(rbAdministrador);
-        rbgRol.add(rbCliente);
+        this.setClosable(true);
+        this.setResizable(true);
+        this.setMaximizable(true);
+        this.setIconifiable(true);
+        this.setTitle("Cliente");
+        this.setMinimumSize(new Dimension(800, 500));
 
         cargarListasIniciales();
 
@@ -71,7 +75,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             cnn = Conexion.conectar();
             listaTipoCliente = new TipoClienteDelegado(cnn).consultar();
             listaTipoDocumento = new TipoDocumentoDelegado(cnn).consultar();
-            listaClientes = new ClienteDelegado(cnn).consultar();
+            listaCliente = new ClienteDelegado(cnn).consultar();
             imprimirListas();
             imprimirTabla();
         } catch (MiniBancoException ex) {
@@ -91,7 +95,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         cboTipoCliente.setModel(modeloTipoCliente);
 
         DefaultComboBoxModel<String> modeloTipoDocumento = new DefaultComboBoxModel<>();
-        modeloTipoDocumento.addElement("Seleccione un tipo de cliente.");
+        modeloTipoDocumento.addElement("Seleccione un tipo de documento.");
         for (TipoDocumento tipoDocumento : listaTipoDocumento) {
             modeloTipoDocumento.addElement(tipoDocumento.getNombre());
         }
@@ -113,14 +117,15 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             /**
              * Adicion de las filas de la tabla
              */
-            for (Cliente cliente : listaClientes) {
-                modeloTabla.addRow(convertirClienteFila(cliente));
+            for (Cliente clientes : listaCliente) {
+                modeloTabla.addRow(convertirClienteFila(clientes));
             }
 
             /**
              * Asignacion del modelo de tabla al JTable
              */
-            tblClientes.setModel(modeloTabla);
+            tblCliente.setModel(modeloTabla);
+
         } catch (SQLException e) {
             throw new MiniBancoException(EMensajes.ERROR_CONSULTAR);
         }
@@ -139,47 +144,62 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         fila[i++] = cliente.getContrasena();
         fila[i++] = cliente.getFechaNacimiento();
         fila[i++] = cliente.getCorreo();
-        fila[i++] = cliente.getRol();
-        fila[i++] = cliente.getTipoCliente().getIdTipoCliente();
-        fila[i++] = cliente.getTipoDocumento().getIdTipoDocumento();
+
+        for (TipoCliente listaTipoClientes : listaTipoCliente) {
+
+            if (cliente.getTipoCliente().getIdTipoCliente() == listaTipoClientes.getIdTipoCliente()) {
+                fila[i++] = listaTipoClientes.getNombre();
+                break;
+            }
+        }
+
+        for (TipoDocumento listaTipoDocumentos : listaTipoDocumento) {
+
+            if (cliente.getTipoDocumento().getIdTipoDocumento() == listaTipoDocumentos.getIdTipoDocumento()) {
+                fila[i++] = listaTipoDocumentos.getNombre();
+                break;
+            }
+        }
+
+        fila[i++] = cliente.getEstado();
         return fila;
     }
 
     private String validarFormularioCliente() {
         StringBuilder sb = new StringBuilder("Los campos (");
         if (txtNombre.getText().equals("")) {
-            sb.append("Nombre ");
+            sb.append(" Nombre ");
         }
         if (txtIdentificacion.getText().equals("")) {
-            sb.append(", Identificación ");
+            sb.append(" Identificación ");
         }
         if (txtTelefono.getText().equals("")) {
-            sb.append(", Telefono ");
+            sb.append(" Telefono ");
         }
         if (txtDireccion.getText().equals("")) {
-            sb.append(", Dirección ");
+            sb.append(" Dirección ");
         }
         if (txtUsuario.getText().equals("")) {
-            sb.append(", Usuario ");
+            sb.append(" Usuario ");
         }
         if (!validarContrasena()) {
-            sb.append(", Contraseña ");
+            sb.append(" Contraseña ");
         }
         if (txtFechaNacimiento.getText().equals("")) {
-            sb.append(", Usuario ");
+            sb.append(" Usuario ");
         }
         if (txtCorreo.getText().equals("")) {
-            sb.append(", Usuario ");
-        }
-        if (!rbAdministrador.isSelected() && !rbCliente.isSelected()) {
-            sb.append(", Rol ");
+            sb.append(" Usuario ");
         }
         if (cboTipoCliente.getSelectedIndex() < 1) {
-            sb.append(", Tipo Cliente ");
+            sb.append(" Tipo Cliente ");
         }
         if (cboTipoDocumento.getSelectedIndex() < 1) {
-            sb.append(", Tipo Documento ");
+            sb.append(" Tipo Documento ");
         }
+
+        CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
+
         return sb.substring(0, sb.length() - 1) + ")";
     }
 
@@ -201,9 +221,6 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         txtFechaNacimiento = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtCorreo = new javax.swing.JTextField();
-        rbCliente = new javax.swing.JRadioButton();
-        rbAdministrador = new javax.swing.JRadioButton();
-        jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         cboTipoDocumento = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
@@ -219,23 +236,18 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         jLabel6 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblClientes = new javax.swing.JTable();
         btnRegistrar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        cbxEstado = new javax.swing.JCheckBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblCliente = new javax.swing.JTable();
+        jLabel10 = new javax.swing.JLabel();
 
         jLabel9.setText("Correo:");
-
-        rbCliente.setText("Cliente");
-
-        rbAdministrador.setText("Administrador");
-
-        jLabel10.setText("Rol:");
 
         jLabel11.setText("Tipo Documento:");
 
@@ -254,19 +266,6 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         jLabel6.setText("Usuario:");
 
         jLabel7.setText("Contraseña:");
-
-        tblClientes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(tblClientes);
 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -288,27 +287,40 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
 
         jLabel8.setText("Fecha Nacimiento:");
 
+        cbxEstado.setText("Desactivo");
+        cbxEstado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxEstadoActionPerformed(evt);
+            }
+        });
+
+        jScrollPane2.setAutoscrolls(true);
+
+        tblCliente.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane2.setViewportView(tblCliente);
+
+        jLabel10.setText("Estado:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCancelar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRegistrar))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(rbAdministrador)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbCliente))
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
                             .addComponent(jLabel7)
@@ -320,11 +332,16 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
                             .addComponent(jLabel11)
-                            .addComponent(jLabel12))
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel10))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cboTipoCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cboTipoDocumento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cbxEstado)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCancelar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRegistrar))
                             .addComponent(txtNombre)
                             .addComponent(txtApellido)
                             .addComponent(txtIdentificacion)
@@ -333,7 +350,9 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
                             .addComponent(txtUsuario)
                             .addComponent(txtCorreo)
                             .addComponent(txtFechaNacimiento)
-                            .addComponent(txtContrasena))))
+                            .addComponent(txtContrasena)
+                            .addComponent(cboTipoCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cboTipoDocumento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -377,25 +396,22 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
                     .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbCliente)
-                    .addComponent(rbAdministrador)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(cboTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(cboTipoDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(cboTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegistrar)
-                    .addComponent(btnCancelar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnCancelar)
+                        .addComponent(btnRegistrar))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cbxEstado)
+                        .addComponent(jLabel10)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -432,18 +448,20 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
             } catch (ParseException e) {
                 throw new MiniBancoException(EMensajes.ERROR_FORMATO_FECHA);
             }
-            nuevoCliente.setRol(rbAdministrador.isSelected() ? 1 : 2);
             nuevoCliente.setTipoCliente(listaTipoCliente.get(cboTipoCliente.getSelectedIndex() - 1));
             nuevoCliente.setTipoDocumento(listaTipoDocumento.get(cboTipoDocumento.getSelectedIndex() - 1));
+            nuevoCliente.setEstado(cbxEstado.isSelected());
+
             if (editar) {
                 nuevoCliente.setIdCliente(idClienteEditar);
                 new ClienteDelegado(cnn).editar(nuevoCliente);
-                JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Registro de usuarios", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Modificacion de usuarios", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 new ClienteDelegado(cnn).insertar(nuevoCliente);
                 JOptionPane.showMessageDialog(rootPane, EMensajes.INSERTO.getDescripcion(), "Registro de usuarios", JOptionPane.INFORMATION_MESSAGE);
 
             }
+
             Conexion.commit(cnn);
             limpiarFormulario();
             cargarListasIniciales();
@@ -458,7 +476,12 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         limpiarFormulario();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void cbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEstadoActionPerformed
+        CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
+    }//GEN-LAST:event_cbxEstadoActionPerformed
+
     private void limpiarFormulario() {
+        editar = false;
         txtNombre.setText("");
         txtApellido.setText("");
         txtIdentificacion.setText("");
@@ -471,15 +494,17 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         rbgRol.clearSelection();
         cboTipoCliente.setSelectedIndex(0);
         cboTipoDocumento.setSelectedIndex(0);
+        cbxEstado.setSelected(false);
+        cbxEstado.setText("Desactivo");
         btnRegistrar.setText("Registrar");
     }
 
     private void initListeners() {
-        tblClientes.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tblCliente.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting() && tblClientes.getSelectedRow() > -1) {
-                    Cliente clienteEditar = listaClientes.get(tblClientes.getSelectedRow());
+                if (!e.getValueIsAdjusting() && tblCliente.getSelectedRow() > -1) {
+                    Cliente clienteEditar = listaCliente.get(tblCliente.getSelectedRow());
                     asignarAlFormulario(clienteEditar);
                 }
             }
@@ -498,11 +523,9 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
         contrasenaEditar = clienteEditar.getContrasena();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         txtFechaNacimiento.setText(sdf.format(clienteEditar.getFechaNacimiento()));
-        if (clienteEditar.getRol() == 1) {
-            rbAdministrador.setSelected(true);
-        } else {
-            rbCliente.setSelected(true);
-        }
+        cbxEstado.setSelected(clienteEditar.getEstado());
+        CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
+
         asignarTipoCliente(clienteEditar.getTipoCliente().getIdTipoCliente());
         asignarTipoDocumento(clienteEditar.getTipoDocumento().getIdTipoDocumento());
         editar = true;
@@ -530,6 +553,7 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JComboBox<String> cboTipoCliente;
     private javax.swing.JComboBox<String> cboTipoDocumento;
+    private javax.swing.JCheckBox cbxEstado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -542,12 +566,9 @@ public class VentanaCliente extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JRadioButton rbAdministrador;
-    private javax.swing.JRadioButton rbCliente;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.ButtonGroup rbgRol;
-    private javax.swing.JTable tblClientes;
+    private javax.swing.JTable tblCliente;
     private javax.swing.JTextField txtApellido;
     private javax.swing.JPasswordField txtContrasena;
     private javax.swing.JTextField txtCorreo;

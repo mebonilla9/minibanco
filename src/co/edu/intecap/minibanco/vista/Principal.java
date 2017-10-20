@@ -5,20 +5,24 @@
  */
 package co.edu.intecap.minibanco.vista;
 
-import co.edu.intecap.minibanco.vista.paneles.PanelCliente;
+import co.edu.intecap.minibanco.vista.paneles.VentanaAuditoria;
 import co.edu.intecap.minibanco.vista.paneles.VentanaCliente;
+import co.edu.intecap.minibanco.vista.paneles.VentanaClienteProducto;
+import co.edu.intecap.minibanco.vista.paneles.VentanaMovimiento;
 import co.edu.intecap.minibanco.vista.paneles.VentanaTipoCliente;
+import co.edu.intecap.minibanco.vista.paneles.VentanaTipoDocumento;
+import co.edu.intecap.minibanco.vista.paneles.VentanaTipoMovimiento;
 import co.edu.intecap.minibanco.vista.paneles.VentanaTipoProducto;
 import co.edu.intecap.minibancolibreria.modelo.vo.Cliente;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  *
@@ -26,18 +30,23 @@ import javax.swing.JPanel;
  */
 public class Principal extends javax.swing.JFrame {
 
+    private List<JInternalFrame> flagVentanas = new ArrayList<>();
+
     /**
      * Creates new form Principal
      */
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public Principal() {
         initComponents();
         initListeners();
         this.setTitle("Aplicación MiniBanco");
         this.setLocationRelativeTo(null);
         this.setMinimumSize(new Dimension(500, 430));
+        //this.setIconImage(image);
         setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         mnuAdministracion.setVisible(false);
         mnuTransacciones.setVisible(false);
+        miSalir.setVisible(false);
     }
 
     /**
@@ -53,16 +62,22 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuAdministracion = new javax.swing.JMenu();
         miAdminCliente = new javax.swing.JMenuItem();
-        miAdminTipoProducto = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        miMovimiento = new javax.swing.JMenuItem();
         miAdminTipoCliente = new javax.swing.JMenuItem();
+        miAdminTipoDocumento = new javax.swing.JMenuItem();
+        miAdminClienteProducto = new javax.swing.JMenuItem();
+        miAdminTipoProducto = new javax.swing.JMenuItem();
+        miAdminMovimiento = new javax.swing.JMenuItem();
+        miAdminTipoMovimiento = new javax.swing.JMenuItem();
+        miAdminAuditoria = new javax.swing.JMenuItem();
         mnuTransacciones = new javax.swing.JMenu();
         mnuOpciones = new javax.swing.JMenu();
         miIngresar = new javax.swing.JMenuItem();
+        miSalir = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+
+        dpContenedor.setBackground(java.awt.Color.lightGray);
 
         javax.swing.GroupLayout dpContenedorLayout = new javax.swing.GroupLayout(dpContenedor);
         dpContenedor.setLayout(dpContenedorLayout);
@@ -80,29 +95,44 @@ public class Principal extends javax.swing.JFrame {
         mnuAdministracion.setText("Administración");
 
         miAdminCliente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
-        miAdminCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/account-edit.png"))); // NOI18N
+        miAdminCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/cliente.png"))); // NOI18N
         miAdminCliente.setText("Administrar Clientes");
         mnuAdministracion.add(miAdminCliente);
 
+        miAdminTipoCliente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
+        miAdminTipoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/tipo_cliente.png"))); // NOI18N
+        miAdminTipoCliente.setText("Administrar Tipo Cliente");
+        mnuAdministracion.add(miAdminTipoCliente);
+
+        miAdminTipoDocumento.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK));
+        miAdminTipoDocumento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/tipo_documento.png"))); // NOI18N
+        miAdminTipoDocumento.setText("Administrar Tipo Documento");
+        mnuAdministracion.add(miAdminTipoDocumento);
+
+        miAdminClienteProducto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
+        miAdminClienteProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/cliente_producto.png"))); // NOI18N
+        miAdminClienteProducto.setText("Administrar Cliente Producto");
+        mnuAdministracion.add(miAdminClienteProducto);
+
         miAdminTipoProducto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK));
-        miAdminTipoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/table-edit.png"))); // NOI18N
+        miAdminTipoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/tipo_producto.png"))); // NOI18N
         miAdminTipoProducto.setText("Administrar Tipo Producto");
         mnuAdministracion.add(miAdminTipoProducto);
 
-        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/cliente-producto.png"))); // NOI18N
-        jMenuItem3.setText("Administrar Cliente Producto");
-        mnuAdministracion.add(jMenuItem3);
+        miAdminMovimiento.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.ALT_MASK));
+        miAdminMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/movimiento.png"))); // NOI18N
+        miAdminMovimiento.setText("Administrar Movimiento");
+        mnuAdministracion.add(miAdminMovimiento);
 
-        miMovimiento.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.ALT_MASK));
-        miMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/movimiento.png"))); // NOI18N
-        miMovimiento.setText("Administrar Movimiento");
-        mnuAdministracion.add(miMovimiento);
+        miAdminTipoMovimiento.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
+        miAdminTipoMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/tipo_movimiento.png"))); // NOI18N
+        miAdminTipoMovimiento.setText("Administrar Tipo Movimineto");
+        mnuAdministracion.add(miAdminTipoMovimiento);
 
-        miAdminTipoCliente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
-        miAdminTipoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/tipo-cliente.png"))); // NOI18N
-        miAdminTipoCliente.setText("Administrar Tipo Cliente");
-        mnuAdministracion.add(miAdminTipoCliente);
+        miAdminAuditoria.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK));
+        miAdminAuditoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/auditoria.png"))); // NOI18N
+        miAdminAuditoria.setText("Administrar Auditoria");
+        mnuAdministracion.add(miAdminAuditoria);
 
         jMenuBar1.add(mnuAdministracion);
 
@@ -111,7 +141,8 @@ public class Principal extends javax.swing.JFrame {
 
         mnuOpciones.setText("Opciones");
 
-        miIngresar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.META_MASK));
+        miIngresar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
+        miIngresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/ingresar.png"))); // NOI18N
         miIngresar.setText("Ingresar");
         miIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -119,6 +150,16 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         mnuOpciones.add(miIngresar);
+
+        miSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK));
+        miSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/iconos/salir.png"))); // NOI18N
+        miSalir.setText("Salir");
+        miSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miSalirActionPerformed(evt);
+            }
+        });
+        mnuOpciones.add(miSalir);
 
         jMenuBar1.add(mnuOpciones);
 
@@ -131,47 +172,159 @@ public class Principal extends javax.swing.JFrame {
         new VentanaLogin(this, this, true).setVisible(true);
     }//GEN-LAST:event_miIngresarActionPerformed
 
+    private void miSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miSalirActionPerformed
+        deshabilitarMenu();
+
+    }//GEN-LAST:event_miSalirActionPerformed
+
     public void habilitarMenu(Cliente cliente) {
-        if (cliente.getRol() == 1) {
+        if (cliente.getTipoCliente().getIdTipoCliente() == 1) {
             mnuAdministracion.setVisible(true);
         }
         mnuTransacciones.setVisible(true);
         miIngresar.setVisible(false);
-        JOptionPane.showMessageDialog(this, "Bienvenido "+cliente.getNombre()+ " "+cliente.getApellido(),"Acceso Autorizado",JOptionPane.INFORMATION_MESSAGE);
-        
-        this.setTitle(this.getTitle() + " - ("+cliente.getUsuario()+") "+cliente.getNombre()+ " "+cliente.getApellido());
+        miSalir.setVisible(true);
+        JOptionPane.showMessageDialog(this, "Bienvenido " + cliente.getNombre() + " " + cliente.getApellido(), "Acceso Autorizado", JOptionPane.INFORMATION_MESSAGE);
+
+        this.setTitle(this.getTitle() + " - (" + cliente.getUsuario() + ") " + cliente.getNombre() + " " + cliente.getApellido());
+    }
+
+    private void deshabilitarMenu() {
+        mnuAdministracion.setVisible(false);
+        mnuTransacciones.setVisible(false);
+        miIngresar.setVisible(true);
+        miSalir.setVisible(false);
+        cerrarVentanaAbierta();
+        JOptionPane.showMessageDialog(this, "Sesión cerrada ", "Salir", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);
+        //this.setTitle(this.getTitle() + " ");
     }
 
     private void initListeners() {
+        @SuppressWarnings("Convert2Lambda")
         ActionListener eventoClickMenu = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+
                 JInternalFrame subVentana = null;
                 JMenuItem menuEvento = (JMenuItem) ae.getSource();
                 subVentana = asignarPanel(menuEvento);
-                subVentana.setVisible(true);
-                dpContenedor.add(subVentana);
-                System.out.println("Dimensiones: " + subVentana.getBounds());
+                if (valVentanaAbierta(menuEvento)) {
+                    subVentana.setVisible(true);
+                    dpContenedor.add(subVentana);
+                }
             }
         };
 
         miAdminCliente.addActionListener(eventoClickMenu);
-        miAdminTipoProducto.addActionListener(eventoClickMenu);
         miAdminTipoCliente.addActionListener(eventoClickMenu);
+        miAdminTipoDocumento.addActionListener(eventoClickMenu);
+        miAdminClienteProducto.addActionListener(eventoClickMenu);
+        miAdminTipoProducto.addActionListener(eventoClickMenu);
+        miAdminMovimiento.addActionListener(eventoClickMenu);
+        miAdminTipoMovimiento.addActionListener(eventoClickMenu);
+        miAdminAuditoria.addActionListener(eventoClickMenu);
     }
 
     private JInternalFrame asignarPanel(JMenuItem menuEvento) {
         JInternalFrame panel = null;
-        if (menuEvento.equals(miAdminCliente)) {
-            panel = new VentanaCliente();
+
+        if (valVentanaAbierta(menuEvento)) {
+
+            if (menuEvento.equals(miAdminCliente)) {
+                panel = new VentanaCliente();
+            }
+            if (menuEvento.equals(miAdminTipoCliente)) {
+                panel = new VentanaTipoCliente();
+            }
+            if (menuEvento.equals(miAdminTipoDocumento)) {
+                panel = new VentanaTipoDocumento();
+            }
+            if (menuEvento.equals(miAdminClienteProducto)) {
+                panel = new VentanaClienteProducto();
+            }
+            if (menuEvento.equals(miAdminTipoProducto)) {
+                panel = new VentanaTipoProducto();
+            }
+            if (menuEvento.equals(miAdminMovimiento)) {
+                panel = new VentanaMovimiento();
+            }
+            if (menuEvento.equals(miAdminTipoMovimiento)) {
+                panel = new VentanaTipoMovimiento();
+            }
+            if (menuEvento.equals(miAdminAuditoria)) {
+                panel = new VentanaAuditoria();
+            }
+            flagVentanas.add(panel);
         }
-        if (menuEvento.equals(miAdminTipoProducto)) {
-            panel = new VentanaTipoProducto();
-        }
-        if (menuEvento.equals(miAdminTipoCliente)) {
-            panel = new VentanaTipoCliente();
-        }
+
         return panel;
+    }
+
+    @SuppressWarnings("element-type-mismatch")
+    private boolean valVentanaAbierta(JMenuItem menuEvento) {
+
+        for (JInternalFrame flagVentana : flagVentanas) {
+            if (menuEvento.equals(miAdminCliente)) {
+                if (flagVentana instanceof VentanaCliente && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminTipoCliente)) {
+                if (flagVentana instanceof VentanaTipoCliente && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminTipoDocumento)) {
+                if (flagVentana instanceof VentanaTipoDocumento && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminClienteProducto)) {
+                if (flagVentana instanceof VentanaClienteProducto && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminTipoProducto)) {
+                if (flagVentana instanceof VentanaTipoProducto && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminMovimiento)) {
+                if (flagVentana instanceof VentanaMovimiento && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminTipoMovimiento)) {
+                if (flagVentana instanceof VentanaTipoMovimiento && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+            if (menuEvento.equals(miAdminAuditoria)) {
+                if (flagVentana instanceof VentanaAuditoria && flagVentana.isVisible()) {
+                    flagVentana.remove(this);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("element-type-mismatch")
+    private void cerrarVentanaAbierta() {
+
+        for (JInternalFrame flagVentana : flagVentanas) {
+            flagVentana.remove(this);
+            flagVentana.setVisible(false);
+        }
     }
 
     /**
@@ -190,17 +343,12 @@ public class Principal extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -212,12 +360,16 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane dpContenedor;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem miAdminAuditoria;
     private javax.swing.JMenuItem miAdminCliente;
+    private javax.swing.JMenuItem miAdminClienteProducto;
+    private javax.swing.JMenuItem miAdminMovimiento;
     private javax.swing.JMenuItem miAdminTipoCliente;
+    private javax.swing.JMenuItem miAdminTipoDocumento;
+    private javax.swing.JMenuItem miAdminTipoMovimiento;
     private javax.swing.JMenuItem miAdminTipoProducto;
     private javax.swing.JMenuItem miIngresar;
-    private javax.swing.JMenuItem miMovimiento;
+    private javax.swing.JMenuItem miSalir;
     private javax.swing.JMenu mnuAdministracion;
     private javax.swing.JMenu mnuOpciones;
     private javax.swing.JMenu mnuTransacciones;

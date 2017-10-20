@@ -15,9 +15,42 @@
                   <KeyStroke key="Alt+C"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/account-edit.png"/>
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/cliente.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Administrar Clientes"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miAdminTipoCliente">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+T"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/tipo_cliente.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Administrar Tipo Cliente"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miAdminTipoDocumento">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+D"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/tipo_documento.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Administrar Tipo Documento"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miAdminClienteProducto">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+Q"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/cliente_producto.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Administrar Cliente Producto"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miAdminTipoProducto">
@@ -26,23 +59,12 @@
                   <KeyStroke key="Alt+P"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/table-edit.png"/>
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/tipo_producto.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Administrar Tipo Producto"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
-              <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+Q"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/cliente-producto.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Administrar Cliente Producto"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="miMovimiento">
+            <MenuItem class="javax.swing.JMenuItem" name="miAdminMovimiento">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Alt+M"/>
@@ -53,15 +75,26 @@
                 <Property name="text" type="java.lang.String" value="Administrar Movimiento"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="miAdminTipoCliente">
+            <MenuItem class="javax.swing.JMenuItem" name="miAdminTipoMovimiento">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+T"/>
+                  <KeyStroke key="Alt+N"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/tipo-cliente.png"/>
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/tipo_movimiento.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Administrar Tipo Cliente"/>
+                <Property name="text" type="java.lang.String" value="Administrar Tipo Movimineto"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miAdminAuditoria">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+A"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/auditoria.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Administrar Auditoria"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -79,12 +112,29 @@
             <MenuItem class="javax.swing.JMenuItem" name="miIngresar">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Meta+I"/>
+                  <KeyStroke key="Alt+I"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/ingresar.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Ingresar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miIngresarActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miSalir">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+S"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/co/edu/intecap/minibanco/vista/resources/iconos/salir.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Salir"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miSalirActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -116,6 +166,11 @@
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
   <SubComponents>
     <Container class="javax.swing.JDesktopPane" name="dpContenedor">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="c0" green="c0" id="lightGray" palette="1" red="c0" type="palette"/>
+        </Property>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">

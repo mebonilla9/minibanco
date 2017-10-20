@@ -7,8 +7,11 @@ package co.edu.intecap.minibanco.vista.paneles;
 
 import co.edu.intecap.minibancolibreria.modelo.conexion.Conexion;
 import co.edu.intecap.minibancolibreria.modelo.vo.TipoCliente;
+import co.edu.intecap.minibancolibreria.modelo.vo.TipoMovimiento;
+import co.edu.intecap.minibancolibreria.modelo.vo.TipoProducto;
 import co.edu.intecap.minibancolibreria.negocio.constantes.EMensajes;
 import co.edu.intecap.minibancolibreria.negocio.delegado.TipoClienteDelegado;
+import co.edu.intecap.minibancolibreria.negocio.delegado.TipoMovimientoDelegado;
 import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
 import co.edu.intecap.minibancolibreria.negocio.util.CheckBoxUtil;
 import java.awt.Dimension;
@@ -23,35 +26,35 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Capacitaciones_pc18
+ * @author Camilo Diaz
  */
-public class VentanaTipoCliente extends javax.swing.JInternalFrame {
-
-    private List<TipoCliente> listaTipoCliente;
+public class VentanaTipoMovimiento extends javax.swing.JInternalFrame {
+    
+    private List<TipoMovimiento> listaTipoMovimiento;
     private Connection cnn;
-    private Long idTipoClienteEditar;
+    private Long idTipoMovimientoEditar;
     private boolean editar;
 
     /**
-     * Creates new form VentanaCliente
+     * Creates new form VentanaTipoMovimiento
      */
-    public VentanaTipoCliente() {
+    public VentanaTipoMovimiento() {
         initComponents();
         initListeners();
         this.setClosable(true);
         this.setResizable(true);
         this.setMaximizable(true);
         this.setIconifiable(true);
-        this.setTitle("Tipo Cliente");
-        this.setMinimumSize(new Dimension(400, 230));
-
+        this.setTitle("Tipo Movimiento");
+        this.setMinimumSize(new Dimension(400,230));
+        
         cargarListasIniciales();
     }
 
     private void cargarListasIniciales() {
         try {
             cnn = Conexion.conectar();
-            listaTipoCliente = new TipoClienteDelegado(cnn).consultar();
+            listaTipoMovimiento = new TipoMovimientoDelegado(cnn).consultar();
             imprimirTabla();
         } catch (MiniBancoException ex) {
             System.out.println(ex.getMensaje());
@@ -59,57 +62,57 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
             Conexion.desconectar(cnn);
         }
     }
-
+    
     private void imprimirTabla() throws MiniBancoException {
         try {
             /**
              * Adicion de las columnas de la tabla
              */
-            ResultSetMetaData columnasTipoCliente = new TipoClienteDelegado(cnn).consultarColumnasTipoCliente();
+            ResultSetMetaData columnasTipoMovimiento = new TipoMovimientoDelegado(cnn).consultarColumnasTipoMovimiento();
             DefaultTableModel modeloTabla = new DefaultTableModel();
 
-            for (int i = 1; i <= columnasTipoCliente.getColumnCount(); i++) {
-                modeloTabla.addColumn(columnasTipoCliente.getColumnName(i));
+            for (int i = 1; i <= columnasTipoMovimiento.getColumnCount(); i++) {
+                modeloTabla.addColumn(columnasTipoMovimiento.getColumnName(i));
             }
 
             /**
              * Adicion de las filas de la tabla
              */
-            for (TipoCliente tipoClientes : listaTipoCliente) {
-                modeloTabla.addRow(convertirTipoClienteFila(tipoClientes));
+            for (TipoMovimiento tipoMovimientos : listaTipoMovimiento) {
+                modeloTabla.addRow(convertirTipoMovimientoFila(tipoMovimientos));
             }
 
             /**
              * Asignacion del modelo de tabla al JTable
              */
-            tblTipoCliente.setModel(modeloTabla);
+            tblTipoMovimiento.setModel(modeloTabla);
 
         } catch (SQLException e) {
             throw new MiniBancoException(EMensajes.ERROR_CONSULTAR);
         }
     }
-
-    private Object[] convertirTipoClienteFila(TipoCliente tipoCliente) {
+    
+    private Object[] convertirTipoMovimientoFila(TipoMovimiento tipoMovimiento) {
         Object[] fila = new Object[3];
         int i = 0;
-        fila[i++] = tipoCliente.getIdTipoCliente();
-        fila[i++] = tipoCliente.getNombre();
-        fila[i++] = tipoCliente.getEstado();
+        fila[i++] = tipoMovimiento.getidTipoMovimiento();
+        fila[i++] = tipoMovimiento.getNombre();
+        fila[i++] = tipoMovimiento.getEstado();
         return fila;
     }
-
+    
     private void initListeners() {
-        tblTipoCliente.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tblTipoMovimiento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting() && tblTipoCliente.getSelectedRow() > -1) {
-                    TipoCliente tipoClienteEditar = listaTipoCliente.get(tblTipoCliente.getSelectedRow());
-                    asignarAlFormulario(tipoClienteEditar);
+                if (!e.getValueIsAdjusting() && tblTipoMovimiento.getSelectedRow() > -1) {
+                    TipoMovimiento tipoMovimientoEditar = listaTipoMovimiento.get(tblTipoMovimiento.getSelectedRow());
+                    asignarAlFormulario(tipoMovimientoEditar);
                 }
             }
         });
     }
-
+    
     private void limpiarFormulario() {
         editar = false;
         txtNombre.setText("");
@@ -117,17 +120,17 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         cbxEstado.setText("Desactivo");
         btnRegistrar.setText("Registrar");
     }
-
-    private void asignarAlFormulario(TipoCliente tipoClienteEditar) {
-        this.idTipoClienteEditar = tipoClienteEditar.getIdTipoCliente();
-        txtNombre.setText(tipoClienteEditar.getNombre());
-        cbxEstado.setSelected(tipoClienteEditar.getEstado());
+    
+    private void asignarAlFormulario(TipoMovimiento tipoMovimientoEditar) {
+        this.idTipoMovimientoEditar = tipoMovimientoEditar.getidTipoMovimiento();
+        txtNombre.setText(tipoMovimientoEditar.getNombre());
+        cbxEstado.setSelected(tipoMovimientoEditar.getEstado());
         CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
         editar = true;
         btnRegistrar.setText("Actualizar");
     }
-
-    private String validarFormularioTipoCliente() {
+    
+    private String validarFormularioTipoMovimiento() {
         StringBuilder sb = new StringBuilder("Los campos (");
         if (txtNombre.getText().equals("")) {
             sb.append(" Nombre ");
@@ -137,7 +140,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
 
         return sb.substring(0, sb.length() - 1) + ")";
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -147,18 +150,25 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        btnRegistrar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
-        lblNombre = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         lblEstado = new javax.swing.JLabel();
         cbxEstado = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblTipoCliente = new javax.swing.JTable();
+        tblTipoMovimiento = new javax.swing.JTable();
+        btnRegistrar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        lblNombre = new javax.swing.JLabel();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        lblEstado.setText("Estado:");
+
+        cbxEstado.setText("Desactivo");
+        cbxEstado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxEstadoActionPerformed(evt);
+            }
+        });
+
+        tblTipoMovimiento.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -169,7 +179,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblTipoMovimiento);
 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -186,28 +196,6 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         });
 
         lblNombre.setText("Nombre:");
-
-        lblEstado.setText("Estado:");
-
-        cbxEstado.setText("Desactivo");
-        cbxEstado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxEstadoActionPerformed(evt);
-            }
-        });
-
-        tblTipoCliente.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(tblTipoCliente);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -264,23 +252,23 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         try {
 
             cnn = Conexion.conectar();
-            String mensaje = validarFormularioTipoCliente();
+            String mensaje = validarFormularioTipoMovimiento();
 
             if (mensaje.length() > 13 && !editar) {
                 JOptionPane.showMessageDialog(this, mensaje, "Formulario Incompleto", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            TipoCliente nuevoTipoCliente = new TipoCliente();
-            nuevoTipoCliente.setNombre(txtNombre.getText());
-            nuevoTipoCliente.setEstado(cbxEstado.isSelected());
+            TipoMovimiento nuevoTipoMovimiento = new TipoMovimiento();
+            nuevoTipoMovimiento.setNombre(txtNombre.getText());
+            nuevoTipoMovimiento.setEstado(cbxEstado.isSelected());
 
             if (editar) {
-                nuevoTipoCliente.setIdTipoCliente(idTipoClienteEditar);
-                new TipoClienteDelegado(cnn).editar(nuevoTipoCliente);
+                nuevoTipoMovimiento.setidTipoMovimiento(idTipoMovimientoEditar);
+                new TipoMovimientoDelegado(cnn).editar(nuevoTipoMovimiento);
                 JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Modificacion de tipo de usuarios", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                new TipoClienteDelegado(cnn).insertar(nuevoTipoCliente);
+                new TipoMovimientoDelegado(cnn).insertar(nuevoTipoMovimiento);
                 JOptionPane.showMessageDialog(rootPane, EMensajes.INSERTO.getDescripcion(), "Registro de tipo de usuarios", JOptionPane.INFORMATION_MESSAGE);
 
             }
@@ -306,11 +294,9 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JCheckBox cbxEstado;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblNombre;
-    private javax.swing.JTable tblTipoCliente;
+    private javax.swing.JTable tblTipoMovimiento;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }

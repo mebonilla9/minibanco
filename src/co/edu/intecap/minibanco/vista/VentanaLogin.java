@@ -12,7 +12,7 @@ import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
 import co.edu.intecap.minibancolibreria.negocio.util.CryptoUtil;
 import co.edu.intecap.minibancolibreria.negocio.util.PasswordUtil;
 import java.awt.Frame;
-import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 
@@ -35,11 +35,14 @@ public class VentanaLogin extends javax.swing.JDialog {
         initComponents();
     }
 
+
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public VentanaLogin(Principal ventanaPrincipal, Frame frame, boolean modal) {
         super(frame, modal);
         this.ventanaPrincipal = ventanaPrincipal;
+        //this.setLocation((ventanaPrincipal.getBounds().width / 2)/* - (this.getBounds().width / 2)*/, (ventanaPrincipal.getBounds().height / 2)/* - (this.getBounds().height / 2)*/);
+        this.setLocationRelativeTo(null);
         initComponents();
-        this.setLocation(ventanaPrincipal.getBounds().width / 2 - this.getBounds().width / 2, ventanaPrincipal.getBounds().height / 2 - this.getBounds().height / 2);
     }
 
     /**
@@ -59,10 +62,23 @@ public class VentanaLogin extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Usuario:");
 
         jLabel2.setText("Contraseña:");
+
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyPressed(evt);
+            }
+        });
+
+        txtContrasena.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtContrasenaKeyPressed(evt);
+            }
+        });
 
         btnIngresar.setText("Ingresar");
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
@@ -71,7 +87,7 @@ public class VentanaLogin extends javax.swing.JDialog {
             }
         });
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/imagenes/login-icon.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/intecap/minibanco/vista/resources/imagenes/login.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -80,26 +96,26 @@ public class VentanaLogin extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtUsuario)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(74, 74, 74))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnIngresar)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtContrasena))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(57, 57, 57)
-                .addComponent(jLabel3)
-                .addContainerGap(58, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtUsuario)
+                            .addComponent(txtContrasena)
+                            .addComponent(btnIngresar, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 113, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -117,15 +133,38 @@ public class VentanaLogin extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-        try {
-            String usuario = txtUsuario.getText();
-            String contrasena = PasswordUtil.armarContrasena(txtContrasena.getPassword());
+        ingresar();
+    }//GEN-LAST:event_btnIngresarActionPerformed
 
+    private void txtContrasenaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContrasenaKeyPressed
+        
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            ingresar();
+        }
+        if(evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setVisible(false);
+        }
+    }//GEN-LAST:event_txtContrasenaKeyPressed
+
+    private void txtUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setVisible(false);
+        }
+    }//GEN-LAST:event_txtUsuarioKeyPressed
+
+    private void ingresar(){
+        try {
+            String usuario = txtUsuario.getText().toLowerCase();
+            String contrasena = PasswordUtil.armarContrasena(txtContrasena.getPassword());
+            
             if (usuario.equals("") || contrasena.equals("")) {
                 JOptionPane.showMessageDialog(this, "Debe diligenciar correctamente el formulario");
                 return;
             }
             Connection cnn = Conexion.conectar();
+            
             Cliente clienteLogin = new ClienteDelegado(cnn).consultaLogin(usuario, CryptoUtil.cifrarContrasena(contrasena));
             
             if (clienteLogin.getIdCliente() == null) {
@@ -133,12 +172,14 @@ public class VentanaLogin extends javax.swing.JDialog {
                 return;
             }
             
+            
             this.ventanaPrincipal.habilitarMenu(clienteLogin);
             this.setVisible(false);
-        } catch (MiniBancoException e) {
+        } catch (MiniBancoException ex) {
         }
-    }//GEN-LAST:event_btnIngresarActionPerformed
-
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresar;
     private javax.swing.JLabel jLabel1;

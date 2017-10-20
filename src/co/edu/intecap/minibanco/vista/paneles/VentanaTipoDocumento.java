@@ -6,9 +6,9 @@
 package co.edu.intecap.minibanco.vista.paneles;
 
 import co.edu.intecap.minibancolibreria.modelo.conexion.Conexion;
-import co.edu.intecap.minibancolibreria.modelo.vo.TipoCliente;
+import co.edu.intecap.minibancolibreria.modelo.vo.TipoDocumento;
 import co.edu.intecap.minibancolibreria.negocio.constantes.EMensajes;
-import co.edu.intecap.minibancolibreria.negocio.delegado.TipoClienteDelegado;
+import co.edu.intecap.minibancolibreria.negocio.delegado.TipoDocumentoDelegado;
 import co.edu.intecap.minibancolibreria.negocio.excepciones.MiniBancoException;
 import co.edu.intecap.minibancolibreria.negocio.util.CheckBoxUtil;
 import java.awt.Dimension;
@@ -23,26 +23,26 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Capacitaciones_pc18
+ * @author Camilo Diaz
  */
-public class VentanaTipoCliente extends javax.swing.JInternalFrame {
+public class VentanaTipoDocumento extends javax.swing.JInternalFrame {
 
-    private List<TipoCliente> listaTipoCliente;
+    private List<TipoDocumento> listaTipoDocumento;
     private Connection cnn;
-    private Long idTipoClienteEditar;
+    private Long idTipoDocumentoEditar;
     private boolean editar;
 
     /**
-     * Creates new form VentanaCliente
+     * Creates new form VentanaTipoDocumento
      */
-    public VentanaTipoCliente() {
+    public VentanaTipoDocumento() {
         initComponents();
         initListeners();
         this.setClosable(true);
         this.setResizable(true);
         this.setMaximizable(true);
         this.setIconifiable(true);
-        this.setTitle("Tipo Cliente");
+        this.setTitle("Tipo Documento");
         this.setMinimumSize(new Dimension(400, 230));
 
         cargarListasIniciales();
@@ -51,7 +51,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
     private void cargarListasIniciales() {
         try {
             cnn = Conexion.conectar();
-            listaTipoCliente = new TipoClienteDelegado(cnn).consultar();
+            listaTipoDocumento = new TipoDocumentoDelegado(cnn).consultar();
             imprimirTabla();
         } catch (MiniBancoException ex) {
             System.out.println(ex.getMensaje());
@@ -65,51 +65,52 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
             /**
              * Adicion de las columnas de la tabla
              */
-            ResultSetMetaData columnasTipoCliente = new TipoClienteDelegado(cnn).consultarColumnasTipoCliente();
+            ResultSetMetaData columnasTipoDocumento = new TipoDocumentoDelegado(cnn).consultarColumnasTipoDocumento();
             DefaultTableModel modeloTabla = new DefaultTableModel();
 
-            for (int i = 1; i <= columnasTipoCliente.getColumnCount(); i++) {
-                modeloTabla.addColumn(columnasTipoCliente.getColumnName(i));
+            for (int i = 1; i <= columnasTipoDocumento.getColumnCount(); i++) {
+                modeloTabla.addColumn(columnasTipoDocumento.getColumnName(i));
             }
 
             /**
              * Adicion de las filas de la tabla
              */
-            for (TipoCliente tipoClientes : listaTipoCliente) {
-                modeloTabla.addRow(convertirTipoClienteFila(tipoClientes));
+            for (TipoDocumento tipoDocuemntos : listaTipoDocumento) {
+                modeloTabla.addRow(convertirTipoDocumentoFila(tipoDocuemntos));
             }
 
             /**
              * Asignacion del modelo de tabla al JTable
              */
-            tblTipoCliente.setModel(modeloTabla);
+            tblTipoDocumento.setModel(modeloTabla);
 
         } catch (SQLException e) {
             throw new MiniBancoException(EMensajes.ERROR_CONSULTAR);
         }
     }
-
-    private Object[] convertirTipoClienteFila(TipoCliente tipoCliente) {
+    
+    private Object[] convertirTipoDocumentoFila(TipoDocumento tipoDocumento) {
         Object[] fila = new Object[3];
         int i = 0;
-        fila[i++] = tipoCliente.getIdTipoCliente();
-        fila[i++] = tipoCliente.getNombre();
-        fila[i++] = tipoCliente.getEstado();
+        fila[i++] = tipoDocumento.getIdTipoDocumento();
+        fila[i++] = tipoDocumento.getNombre();
+        fila[i++] = tipoDocumento.getEstado();
         return fila;
     }
-
+    
+    
     private void initListeners() {
-        tblTipoCliente.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tblTipoDocumento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting() && tblTipoCliente.getSelectedRow() > -1) {
-                    TipoCliente tipoClienteEditar = listaTipoCliente.get(tblTipoCliente.getSelectedRow());
-                    asignarAlFormulario(tipoClienteEditar);
+                if (!e.getValueIsAdjusting() && tblTipoDocumento.getSelectedRow() > -1) {
+                    TipoDocumento tipoDocumentoEditar = listaTipoDocumento.get(tblTipoDocumento.getSelectedRow());
+                    asignarAlFormulario(tipoDocumentoEditar);
                 }
             }
         });
     }
-
+    
     private void limpiarFormulario() {
         editar = false;
         txtNombre.setText("");
@@ -118,16 +119,16 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         btnRegistrar.setText("Registrar");
     }
 
-    private void asignarAlFormulario(TipoCliente tipoClienteEditar) {
-        this.idTipoClienteEditar = tipoClienteEditar.getIdTipoCliente();
-        txtNombre.setText(tipoClienteEditar.getNombre());
-        cbxEstado.setSelected(tipoClienteEditar.getEstado());
+    private void asignarAlFormulario(TipoDocumento tipoDocumentoEditar) {
+        this.idTipoDocumentoEditar = tipoDocumentoEditar.getIdTipoDocumento();
+        txtNombre.setText(tipoDocumentoEditar.getNombre());
+        cbxEstado.setSelected(tipoDocumentoEditar.getEstado());
         CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
         editar = true;
         btnRegistrar.setText("Actualizar");
     }
-
-    private String validarFormularioTipoCliente() {
+    
+    private String validarFormularioTipoDocumento() {
         StringBuilder sb = new StringBuilder("Los campos (");
         if (txtNombre.getText().equals("")) {
             sb.append(" Nombre ");
@@ -137,7 +138,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
 
         return sb.substring(0, sb.length() - 1) + ")";
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -147,8 +148,6 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         btnRegistrar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         lblNombre = new javax.swing.JLabel();
@@ -156,20 +155,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         lblEstado = new javax.swing.JLabel();
         cbxEstado = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblTipoCliente = new javax.swing.JTable();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jTable1);
+        tblTipoDocumento = new javax.swing.JTable();
 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -196,7 +182,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
             }
         });
 
-        tblTipoCliente.setModel(new javax.swing.table.DefaultTableModel(
+        tblTipoDocumento.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -207,7 +193,7 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tblTipoCliente);
+        jScrollPane1.setViewportView(tblTipoDocumento);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -256,41 +242,37 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEstadoActionPerformed
-        CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
-    }//GEN-LAST:event_cbxEstadoActionPerformed
-
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         try {
 
             cnn = Conexion.conectar();
-            String mensaje = validarFormularioTipoCliente();
+            String mensaje = validarFormularioTipoDocumento();
 
             if (mensaje.length() > 13 && !editar) {
                 JOptionPane.showMessageDialog(this, mensaje, "Formulario Incompleto", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            TipoCliente nuevoTipoCliente = new TipoCliente();
-            nuevoTipoCliente.setNombre(txtNombre.getText());
-            nuevoTipoCliente.setEstado(cbxEstado.isSelected());
-
+            TipoDocumento nuevoTipoDocumento = new TipoDocumento();
+            nuevoTipoDocumento.setNombre(txtNombre.getText());
+            nuevoTipoDocumento.setEstado(cbxEstado.isSelected());
+            
             if (editar) {
-                nuevoTipoCliente.setIdTipoCliente(idTipoClienteEditar);
-                new TipoClienteDelegado(cnn).editar(nuevoTipoCliente);
-                JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Modificacion de tipo de usuarios", JOptionPane.INFORMATION_MESSAGE);
+                nuevoTipoDocumento.setIdTipoDocumento(idTipoDocumentoEditar);
+                new TipoDocumentoDelegado(cnn).editar(nuevoTipoDocumento);
+                JOptionPane.showMessageDialog(rootPane, EMensajes.MODIFICO.getDescripcion(), "Modificacion de tipo de documento", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                new TipoClienteDelegado(cnn).insertar(nuevoTipoCliente);
-                JOptionPane.showMessageDialog(rootPane, EMensajes.INSERTO.getDescripcion(), "Registro de tipo de usuarios", JOptionPane.INFORMATION_MESSAGE);
+                new TipoDocumentoDelegado(cnn).insertar(nuevoTipoDocumento);
+                JOptionPane.showMessageDialog(rootPane, EMensajes.INSERTO.getDescripcion(), "Registro de tipo de documento", JOptionPane.INFORMATION_MESSAGE);
 
             }
-
-            Conexion.commit(cnn);
-            limpiarFormulario();
-            cargarListasIniciales();
+            
+        Conexion.commit(cnn);
+        limpiarFormulario();
+        cargarListasIniciales();
 
         } catch (MiniBancoException e) {
-            JOptionPane.showMessageDialog(this, e.getMensaje(), "Registro tipo de Usuario", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMensaje(), "Registro tipo de documento", JOptionPane.ERROR_MESSAGE);
         } finally {
             Conexion.desconectar(cnn);
         }
@@ -300,17 +282,20 @@ public class VentanaTipoCliente extends javax.swing.JInternalFrame {
         limpiarFormulario();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void cbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEstadoActionPerformed
+        CheckBoxUtil.validarCheckBoxEstado(cbxEstado);
+    }//GEN-LAST:event_cbxEstadoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JCheckBox cbxEstado;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblNombre;
-    private javax.swing.JTable tblTipoCliente;
+    private javax.swing.JTable tblTipoDocumento;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
+
 }
